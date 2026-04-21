@@ -31,7 +31,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           password: ${{ secrets.SERVER_PASSWORD }} # 或者使用 ssh_key
           source: ".next/standalone/,.next/static/,public/,ecosystem.config.js"
-          target: "/www/wwwroot/ticket-server"
+          target: "/www/wwwroot/ticket-server2"
           strip_components: 1 # 去除一层目录结构
 
       - name: Restart PM2
@@ -41,7 +41,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           password: ${{ secrets.SERVER_PASSWORD }}
           script: |
-            cd /www/wwwroot/ticket-server
+            cd /www/wwwroot/ticket-server2
             # 复制 static 文件到 standalone 目录中（Next.js standalone 的要求）
             cp -r .next/static .next/standalone/.next/
             cp -r public .next/standalone/

@@ -1,5 +1,5 @@
 /** @type {import('next').NextConfig} */
-const basePath = '/ticket'
+const basePath = '/ticket2'
 const nextConfig = {
   basePath,
   env: {
