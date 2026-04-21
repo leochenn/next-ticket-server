@@ -46,17 +46,22 @@ jobs:
           script: |
             cd /www/wwwroot/ticket-server2
             
-            # 1. 创建 Standalone 运行时需要的目录结构
+            # 1. 确保目录存在
             mkdir -p standalone/.next
             
-            # 2. 移动 static 文件夹（根据你的 ls 结果，它现在叫 static）
+            # 2. 将上传的新 .next/server 文件覆盖到 standalone 中
+            if [ -d ".next/server" ]; then
+              cp -rf .next/server standalone/.next/
+            fi
+            
+            # 3. 移动 static 文件夹（根据你的 ls 结果，它现在叫 static）
             if [ -d "static" ]; then
               rm -rf standalone/.next/static
               cp -r static standalone/.next/
               echo "Static moved successfully"
             fi
             
-            # 3. 移动 public 文件夹
+            # 4. 移动 public 文件夹
             if [ -d "public" ]; then
               rm -rf standalone/public
               cp -r public standalone/
