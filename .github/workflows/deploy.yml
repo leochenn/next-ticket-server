@@ -1,0 +1,49 @@
+name: Deploy Next.js to Tencent Cloud
+
+on:
+  push:
+    branches:
+      - main # 当推送到 main 分支时触发
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18' # 替换为你的 Node 版本
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Build Project
+        run: npm run build
+
+      - name: Deploy to Server
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          password: ${{ secrets.SERVER_PASSWORD }} # 或者使用 ssh_key
+          source: ".next/standalone/,.next/static/,public/,ecosystem.config.js"
+          target: "/www/wwwroot/ticket-server"
+          strip_components: 1 # 去除一层目录结构
+
+      - name: Restart PM2
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          script: |
+            cd /www/wwwroot/ticket-server
+            # 复制 static 文件到 standalone 目录中（Next.js standalone 的要求）
+            cp -r .next/static .next/standalone/.next/
+            cp -r public .next/standalone/
+            # 使用 PM2 reload 实现零停机重启
+            pm2 reload ecosystem.config.js || pm2 start ecosystem.config.js
