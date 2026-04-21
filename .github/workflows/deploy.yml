@@ -49,6 +49,11 @@ jobs:
             # 1. 确保目录存在
             mkdir -p standalone/.next
             
+            # 将上传的新 .next/server 文件覆盖到 standalone 中
+            if [ -d ".next/server" ]; then
+              cp -rf .next/server standalone/.next/
+            fi
+            
             # 清除旧的 Next.js 运行时缓存！(这是导致标题不更新的元凶)
             echo "Cleaning Next.js runtime cache..."
             rm -rf standalone/.next/cache
