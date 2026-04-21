@@ -45,8 +45,28 @@ jobs:
           port: 2222
           script: |
             cd /www/wwwroot/ticket-server2
-            # 复制 static 文件到 standalone 目录中（Next.js standalone 的要求）
-            cp -r .next/static .next/standalone/.next/
-            cp -r public .next/standalone/
-            # 使用 PM2 reload 实现零停机重启
-            pm2 reload ecosystem.config.js || pm2 start ecosystem.config.js
+            
+            # 1. 创建 Standalone 运行时需要的目录结构
+            mkdir -p standalone/.next
+            
+            # 2. 移动 static 文件夹（根据你的 ls 结果，它现在叫 static）
+            if [ -d "static" ]; then
+              cp -r static standalone/.next/
+              echo "Static moved successfully"
+            fi
+            
+            # 3. 移动 public 文件夹
+            if [ -d "public" ]; then
+              cp -r public standalone/
+              echo "Public moved successfully"
+            fi
+
+            # 4. 启动服务
+            # 进到 standalone 目录启动，或者指定 ecosystem 的位置
+            if [ -f "ecosystem.config.js" ]; then
+              pm2 reload ecosystem.config.js || pm2 start ecosystem.config.js
+            else
+              # 如果还是找不到 ecosystem，就直接用 pm2 暴力启动 server.js
+              cd standalone
+              pm2 reload server.js --name "ticket-server2" || pm2 start server.js --name "ticket-server2" -- --port 3001
+            fi
