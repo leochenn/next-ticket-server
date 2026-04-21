@@ -33,7 +33,7 @@ jobs:
           source: ".next/standalone/,.next/static/,public/,ecosystem.config.js"
           target: "/www/wwwroot/ticket-server2"
           strip_components: 1 # 去除一层目录结构
-          rm:true
+          rm: true
 
       - name: Restart PM2
         uses: appleboy/ssh-action@v0.1.6
