@@ -49,19 +49,18 @@ jobs:
             # 1. 确保目录存在
             mkdir -p standalone/.next
             
-            # 2. 将上传的新 .next/server 文件覆盖到 standalone 中
-            if [ -d ".next/server" ]; then
-              cp -rf .next/server standalone/.next/
-            fi
+            # 清除旧的 Next.js 运行时缓存！(这是导致标题不更新的元凶)
+            echo "Cleaning Next.js runtime cache..."
+            rm -rf standalone/.next/cache
             
-            # 3. 移动 static 文件夹（根据你的 ls 结果，它现在叫 static）
+            # 2. 移动 static 文件夹（根据你的 ls 结果，它现在叫 static）
             if [ -d "static" ]; then
               rm -rf standalone/.next/static
               cp -r static standalone/.next/
               echo "Static moved successfully"
             fi
             
-            # 4. 移动 public 文件夹
+            # 3. 移动 public 文件夹
             if [ -d "public" ]; then
               rm -rf standalone/public
               cp -r public standalone/
@@ -71,11 +70,11 @@ jobs:
             # 4. 启动服务
             # 进到 standalone 目录启动，或者指定 ecosystem 的位置
             if [ -f "ecosystem.config.js" ]; then
-              pm2 reload ecosystem.config.js --update-env || pm2 start ecosystem.config.js
+              pm2 restart ecosystem.config.js --update-env || pm2 start ecosystem.config.js
             else
               # 如果还是找不到 ecosystem，就直接用 pm2 暴力启动 server.js
               cd standalone
-              pm2 reload server.js --name "ticket-server2" || pm2 start server.js --name "ticket-server2" -- --port 3001
+              pm2 restart server.js --name "ticket-server2" || pm2 start server.js --name "ticket-server2" -- --port 3001
             fi
             
             echo "Waiting for Next.js server to boot..."
