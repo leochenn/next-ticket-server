@@ -30,6 +30,7 @@ jobs:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_KEY }} # 或者使用 ssh_key
+          port: 2222
           source: ".next/standalone/,.next/static/,public/,ecosystem.config.js"
           target: "/www/wwwroot/ticket-server2"
           strip_components: 1 # 去除一层目录结构
@@ -41,6 +42,7 @@ jobs:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_KEY }}
+          port: 2222
           script: |
             cd /www/wwwroot/ticket-server2
             # 复制 static 文件到 standalone 目录中（Next.js standalone 的要求）
