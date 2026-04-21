@@ -72,3 +72,11 @@ jobs:
               cd standalone
               pm2 reload server.js --name "ticket-server2" || pm2 start server.js --name "ticket-server2" -- --port 3001
             fi
+
+            echo "---- Verify: local Next ----"
+            curl -fsS -D - http://127.0.0.1:3001/ticket2 -o /tmp/ticket2.html >/dev/null || true
+            sed -n 's/.*<title>\(.*\)<\/title>.*/\1/p' /tmp/ticket2.html | head -n 1 || true
+
+            echo "---- Verify: nginx ----"
+            curl -kfsS -D - https://127.0.0.1/ticket2 -o /tmp/ticket2-nginx.html >/dev/null || true
+            sed -n 's/.*<title>\(.*\)<\/title>.*/\1/p' /tmp/ticket2-nginx.html | head -n 1 || true
