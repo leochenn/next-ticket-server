@@ -2,7 +2,7 @@ import './globals.css'
 import Link from 'next/link'
 
 export const metadata = {
-  title: '抢票管理后台22',
+  title: '抢票管理后台222',
   description: '抢票功能状态控制与日志管理',
 }
 
