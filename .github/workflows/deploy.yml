@@ -72,6 +72,10 @@ jobs:
               cd standalone
               pm2 reload server.js --name "ticket-server2" || pm2 start server.js --name "ticket-server2" -- --port 3001
             fi
+            
+            echo "Waiting for Next.js server to boot..."
+            sleep 3
+            pm2 logs ticket-server2 --lines 20 --nostream
 
             echo "---- Verify: local Next ----"
             curl -fsS -D - http://127.0.0.1:3001/ticket2 -o /tmp/ticket2.html >/dev/null || true
