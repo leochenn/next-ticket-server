@@ -31,7 +31,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_KEY }} # 或者使用 ssh_key
           port: 2222
-          source: ".next/standalone/,.next/static/,public/,ecosystem.config.js"
+          source: "ecosystem.config.js,.next/standalone/**,.next/static/**,public/**"
           target: "/www/wwwroot/ticket-server2"
           strip_components: 1 # 去除一层目录结构
           rm: false
